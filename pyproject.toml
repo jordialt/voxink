@@ -1,0 +1,16 @@
+[project]
+name = "voxink"
+version = "0.1.0"
+description = "Local, offline AI voice dictation daemon that transcribes speech and injects text into any Linux window"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "evdev>=1.9.3",
+    "faster-whisper>=1.2.1",
+    "keyboard>=0.13.5",
+    "numpy>=2.4.2",
+    "ollama>=0.6.1",
+    "pynput>=1.8.1",
+    "scipy>=1.17.1",
+    "sounddevice>=0.5.5",
+]
