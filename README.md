@@ -2,7 +2,7 @@
 
 **Voice becomes ink.** A local, offline AI voice dictation daemon for Linux.
 
-Hold a key. Speak. Release. Your words appear — cleaned up, punctuated, and injected directly into whatever window is active. No cloud. No API keys. No data leaving your machine.
+Hold a key. Speak. Release. Your words appear — cleaned up, punctuated, and stored in your clipboard. No cloud. No API keys. No data leaving your machine.
 
 ---
 
@@ -10,7 +10,7 @@ Hold a key. Speak. Release. Your words appear — cleaned up, punctuated, and in
 
 Voxink is a lightweight background daemon that gives Linux a system-wide voice dictation capability. It works across every application — browser, terminal, IDE, chat, anything — without requiring browser extensions or subscriptions.
 
-The full pipeline runs locally: audio capture → Whisper transcription → optional LLM cleanup via Ollama → text injection into the focused window. On typical hardware, the turnaround from releasing the hotkey to seeing text appear is under two seconds.
+The full pipeline runs locally: audio capture → Whisper transcription → optional LLM cleanup via Ollama → text copied to your clipboard. On typical hardware, the turnaround from releasing the hotkey to text being ready in your clipboard is under two seconds.
 
 ---
 
@@ -54,7 +54,7 @@ The full pipeline runs locally: audio capture → Whisper transcription → opti
 
        |
        v
-  [Text appears in focused window]
+  [Text stored in clipboard — paste with Ctrl+V]
 ```
 
 The daemon main loop (`main.py`) orchestrates all of this. Audio processing runs in a background thread so the hotkey listener never blocks.
@@ -176,7 +176,7 @@ Disable Ollama entirely for zero-latency raw transcription:
 USE_AI_FORMATTING = False
 ```
 
-Transcription will still run through Whisper, but the LLM formatting step is skipped. Text is injected as-is from Whisper's output.
+Transcription will still run through Whisper, but the LLM formatting step is skipped. Text is stored in your clipboard as-is from Whisper's output.
 
 ### Using a different Ollama model
 
@@ -258,21 +258,21 @@ sudo usermod -aG input $USER
 
 Note that even after adding yourself to the group, the keyboard module may still have issues on some distributions. Using sudo is the most reliable approach.
 
-### Text not injecting on Wayland
+### Text not copied to clipboard on Wayland
 
-Wayland text injection requires `wtype` and `wl-clipboard`:
-
-```bash
-sudo apt install wtype wl-clipboard
-```
-
-Some compositors (notably GNOME with certain security settings) restrict synthetic input injection. If text does not appear, try a different compositor or check if `wtype` works independently:
+Clipboard access on Wayland requires `wl-clipboard`:
 
 ```bash
-wtype "hello"
+sudo apt install wl-clipboard
 ```
 
-### Text not injecting on X11
+If text is not being copied, verify `wl-copy` works independently:
+
+```bash
+echo "hello" | wl-copy
+```
+
+### Text not copied to clipboard on X11
 
 Install the required tools:
 ```bash
@@ -341,7 +341,7 @@ voxink/
 │   ├── stt.py        # SpeechToText — faster-whisper transcription
 │   ├── llm.py        # LLMFormatter — Ollama filler-word removal
 │   ├── hotkey.py     # HotkeyListener — global key press/release detection
-│   └── injector.py   # TextInjector — Wayland/X11 text injection
+│   └── injector.py   # TextInjector — Wayland/X11 clipboard storage
 ├── start_daemon.sh   # Background daemon launcher
 ├── pyproject.toml
 └── uv.lock
