@@ -8,7 +8,7 @@ Hold a key. Speak. Release. Your words appear — cleaned up, punctuated, and in
 
 ## What it is
 
-Voxink is a lightweight background daemon that gives Linux a system-wide voice dictation capability. It works across every application — browser, terminal, IDE, chat, anything — without requiring clipboard hacks, browser extensions, or subscriptions.
+Voxink is a lightweight background daemon that gives Linux a system-wide voice dictation capability. It works across every application — browser, terminal, IDE, chat, anything — without requiring browser extensions or subscriptions.
 
 The full pipeline runs locally: audio capture → Whisper transcription → optional LLM cleanup via Ollama → text injection into the focused window. On typical hardware, the turnaround from releasing the hotkey to seeing text appear is under two seconds.
 
@@ -49,8 +49,8 @@ The full pipeline runs locally: audio capture → Whisper transcription → opti
 
        |
        v
-  TextInjector             Wayland: wl-copy + wtype Ctrl+V
-  (injector.py)            X11:     xclip  + xdotool Ctrl+V
+  TextInjector             Wayland: wl-copy stores text in the clipboard
+  (injector.py)            X11:     xclip stores text in the clipboard
 
        |
        v
@@ -226,7 +226,7 @@ sudo pkill -f "python src/main.py"
 2. Hold **Alt Gr** (or your configured key). A desktop notification confirms recording has started.
 3. Speak naturally. You can speak for as long as you need — there is no timeout.
 4. Release the key.
-5. Voxink transcribes your audio, optionally runs it through the LLM, and types the result into your focused window.
+5. Voxink transcribes your audio, optionally runs it through the LLM, and stores the result in your clipboard.
 
 Desktop notifications give you feedback at each stage:
 - `Recording Started` — mic is live.
