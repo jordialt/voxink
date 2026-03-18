@@ -24,7 +24,7 @@ class LLMFormatter:
                 model=self.model,
                 messages=[
                     {'role': 'system', 'content': self.system_prompt},
-                    {'role': 'user', 'content': raw_text}
+                    {'role': 'user', 'content': f'[TRANSCRIPTION]\n{raw_text}\n[/TRANSCRIPTION]'}
                 ]
             )
             return response['message']['content'].strip()
